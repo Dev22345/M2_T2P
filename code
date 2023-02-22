@@ -1,0 +1,39 @@
+const int motionSensorPin = 2;
+const int ledPin = 13;
+
+volatile bool motionFlag = false;
+bool motionDetected = false;
+
+void setup() {
+  pinMode(motionSensorPin, INPUT);
+
+  pinMode(ledPin, OUTPUT);
+
+  Serial.begin(9600);
+
+  attachInterrupt(digitalPinToInterrupt(motionSensorPin), motionDetectedInterrupt, CHANGE);
+}
+
+void loop() {
+  Serial.print("Motion flag: ");
+  Serial.println(motionFlag);
+
+  if (motionDetected) {
+    motionFlag = true;
+    motionDetected = false;
+  } else {
+    motionFlag = false;
+  }
+
+  if (motionFlag) {
+    digitalWrite(ledPin, HIGH);
+  } else {
+    digitalWrite(ledPin, LOW);
+  }
+  
+  delay(1000);
+}
+
+void motionDetectedInterrupt() {
+  motionDetected = true;
+}
